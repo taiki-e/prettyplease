@@ -102,9 +102,9 @@ impl Printer {
             }
         }
         let last = generic.args.iter().max_by_key(|param| group(param));
-        for current_group in [Group::First, Group::Second, Group::Third] {
+        for current_group in &[Group::First, Group::Second, Group::Third] {
             for arg in &generic.args {
-                if group(arg) == current_group {
+                if group(arg) == *current_group {
                     self.generic_argument(arg);
                     self.trailing_comma(ptr::eq(arg, last.unwrap()));
                 }

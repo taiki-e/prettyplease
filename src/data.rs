@@ -80,7 +80,7 @@ impl Printer {
         let omit_in = vis.path.leading_colon.is_none()
             && vis.path.segments.len() == 1
             && vis.path.segments[0].arguments.is_none()
-            && matches!(
+            && matches_!(
                 vis.path.segments[0].ident.to_string().as_str(),
                 "self" | "super" | "crate",
             );

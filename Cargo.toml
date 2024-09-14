@@ -6,19 +6,19 @@ autoexamples = false
 categories = ["development-tools"]
 description = "A minimal `syn` syntax tree pretty-printer"
 documentation = "https://docs.rs/prettyplease"
-edition = "2021"
+edition = "2018"
 exclude = ["cargo-expand"]
 keywords = ["rustfmt"]
 license = "MIT OR Apache-2.0"
 links = "prettyplease01"
 repository = "https://github.com/dtolnay/prettyplease"
-rust-version = "1.56"
+rust-version = "1.36"
 
 [features]
 verbatim = ["syn/parsing"]
 
 [dependencies]
-proc-macro2 = { version = "1.0", default-features = false }
+proc-macro2 = { version = "=1.0.65", default-features = false }
 syn = { version = "1.0.104", default-features = false, features = ["full"] }
 
 [dev-dependencies]

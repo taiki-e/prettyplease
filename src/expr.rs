@@ -284,7 +284,11 @@ impl Printer {
                     self.expr(&expr.body);
                     self.scan_break(BreakToken {
                         offset: -INDENT,
-                        pre_break: stmt::add_semi(&expr.body).then(|| ';'),
+                        pre_break: if stmt::add_semi(&expr.body) {
+                            Some(';')
+                        } else {
+                            None
+                        },
                         post_break: Some('}'),
                         ..BreakToken::default()
                     });
@@ -926,9 +930,21 @@ impl Printer {
             self.expr(body);
             self.scan_break(BreakToken {
                 offset: -INDENT,
-                pre_break: stmt::add_semi(body).then(|| ';'),
+                pre_break: {
+                    if stmt::add_semi(body) {
+                        Some(';')
+                    } else {
+                        None
+                    }
+                },
                 post_break: Some('}'),
-                no_break: requires_terminator(body).then(|| ','),
+                no_break: {
+                    if requires_terminator(body) {
+                        Some(',')
+                    } else {
+                        None
+                    }
+                },
                 ..BreakToken::default()
             });
             self.end();

@@ -194,7 +194,7 @@ fn value_of_attribute(requested: &str, attr: &Attribute) -> Option<String> {
     }
     let mut tokens = attr.tokens.clone().into_iter();
     match tokens.next() {
-        Some(TokenTree::Punct(punct)) if punct.as_char() == '=' => {}
+        Some(TokenTree::Punct(ref punct)) if punct.as_char() == '=' => {}
         _ => return None,
     }
     let literal = match tokens.next() {

@@ -157,29 +157,37 @@ impl Printer {
                 (Dollar, Token::Ident(_)) => (false, if matcher { DollarIdent } else { Other }),
                 (DollarIdent, Token::Punct(':', Spacing::Alone)) => (false, DollarIdentColon),
                 (DollarIdentColon, Token::Ident(_)) => (false, Other),
-                (DollarParen, Token::Punct('+' | '*' | '?', Spacing::Alone)) => (false, Other),
-                (DollarParen, Token::Ident(_) | Token::Literal(_)) => (false, DollarParenSep),
+                (DollarParen, Token::Punct('+', Spacing::Alone))
+                | (DollarParen, Token::Punct('*', Spacing::Alone))
+                | (DollarParen, Token::Punct('?', Spacing::Alone)) => (false, Other),
+                (DollarParen, Token::Ident(_)) | (DollarParen, Token::Literal(_)) => {
+                    (false, DollarParenSep)
+                }
                 (DollarParen, Token::Punct(_, Spacing::Joint)) => (false, DollarParen),
                 (DollarParen, Token::Punct(_, Spacing::Alone)) => (false, DollarParenSep),
-                (DollarParenSep, Token::Punct('+' | '*', _)) => (false, Other),
-                (Pound, Token::Punct('!', _)) => (false, PoundBang),
-                (Dollar, Token::Group(Delimiter::Parenthesis, _)) => (false, DollarParen),
-                (Pound | PoundBang, Token::Group(Delimiter::Bracket, _)) => (false, Other),
-                (Ident, Token::Group(Delimiter::Parenthesis | Delimiter::Bracket, _)) => {
-                    (false, Delim)
-                }
-                (Ident, Token::Punct('!', Spacing::Alone)) => (false, IdentBang),
-                (IdentBang, Token::Group(Delimiter::Parenthesis | Delimiter::Bracket, _)) => {
+                (DollarParenSep, Token::Punct('+', _)) | (DollarParenSep, Token::Punct('*', _)) => {
                     (false, Other)
                 }
+                (Pound, Token::Punct('!', _)) => (false, PoundBang),
+                (Dollar, Token::Group(Delimiter::Parenthesis, _)) => (false, DollarParen),
+                (Pound, Token::Group(Delimiter::Bracket, _))
+                | (PoundBang, Token::Group(Delimiter::Bracket, _)) => (false, Other),
+                (Ident, Token::Group(Delimiter::Parenthesis, _))
+                | (Ident, Token::Group(Delimiter::Bracket, _)) => (false, Delim),
+                (Ident, Token::Punct('!', Spacing::Alone)) => (false, IdentBang),
+                (IdentBang, Token::Group(Delimiter::Parenthesis, _))
+                | (IdentBang, Token::Group(Delimiter::Bracket, _)) => (false, Other),
                 (Colon, Token::Punct(':', _)) => (false, Colon2),
-                (_, Token::Group(Delimiter::Parenthesis | Delimiter::Bracket, _)) => (true, Delim),
-                (_, Token::Group(Delimiter::Brace | Delimiter::None, _)) => (true, Other),
+                (_, Token::Group(Delimiter::Parenthesis, _))
+                | (_, Token::Group(Delimiter::Bracket, _)) => (true, Delim),
+                (_, Token::Group(Delimiter::Brace, _)) | (_, Token::Group(Delimiter::None, _)) => {
+                    (true, Other)
+                }
                 (_, Token::Ident(ident)) if !is_keyword(ident) => {
                     (state != Dot && state != Colon2, Ident)
                 }
                 (_, Token::Literal(_)) => (state != Dot, Ident),
-                (_, Token::Punct(',' | ';', _)) => (false, Other),
+                (_, Token::Punct(',', _)) | (_, Token::Punct(';', _)) => (false, Other),
                 (_, Token::Punct('.', _)) if !matcher => (state != Ident && state != Delim, Dot),
                 (_, Token::Punct(':', Spacing::Joint)) => (state != Ident, Colon),
                 (_, Token::Punct('$', _)) => (true, Dollar),

@@ -36,9 +36,9 @@ impl Printer {
             }
         }
         let last = generics.params.iter().max_by_key(|param| group(param));
-        for current_group in [Group::First, Group::Second] {
+        for current_group in &[Group::First, Group::Second] {
             for param in &generics.params {
-                if group(param) == current_group {
+                if group(param) == *current_group {
                     self.generic_param(param);
                     self.trailing_comma(ptr::eq(param, last.unwrap()));
                 }
